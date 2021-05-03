@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -51,14 +50,13 @@ public class S3Uploader {
     private void removeNewFile(File targetFile) {
         if (targetFile.delete()) {
             log.info("File delete success");
-        } else {
-            log.info("File delete fail");
+            return;
         }
+        log.info("File delete fail");
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
         File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());
-        System.out.println(convertFile.getAbsolutePath());
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());
