@@ -15,5 +15,4 @@ public class ImageApplication {
                 .properties(APPLICATION_LOCATIONS)
                 .run(args);
     }
-
 }

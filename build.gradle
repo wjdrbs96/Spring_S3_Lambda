@@ -23,6 +23,12 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.0.1'
+    implementation 'mysql:mysql-connector-java'
+
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+
     compile 'org.springframework.cloud:spring-cloud-starter-aws:2.0.1.RELEASE'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

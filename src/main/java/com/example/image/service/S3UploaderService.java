@@ -3,6 +3,7 @@ package com.example.image.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.image.mapper.HelloMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,12 +22,16 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class S3Uploader {
+public class S3UploaderService {
 
     private final AmazonS3Client amazonS3Client;
+    private final HelloMapper helloMapper;
 
-    @Value("${cloud.aws.s3.bucket}")
-    public String bucket;
+    @Value("${cloud.aws.s3.originBucket}")
+    public String originBucket;
+
+    @Value("${cloud.aws.s3.resizeBucket}")
+    public String resizeBucket;
 
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
         File uploadFile = convert(multipartFile)
@@ -43,8 +48,11 @@ public class S3Uploader {
     }
 
     private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        amazonS3Client.putObject(new PutObjectRequest(originBucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        String originUrl = amazonS3Client.getUrl(originBucket, fileName).toString();
+        String resizeUrl = amazonS3Client.getUrl(resizeBucket, fileName).toString();
+        helloMapper.imageUrlInsert(originUrl, resizeUrl);
+        return amazonS3Client.getUrl(originBucket, fileName).toString();
     }
 
     private void removeNewFile(File targetFile) {
