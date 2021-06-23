@@ -24,7 +24,7 @@ public class HelloController {
 
     @PostMapping("/images")
     public String upload(@RequestParam("images") MultipartFile multipartFile) throws IOException {
-        s3Uploader.upload(multipartFile, "static");
+        s3Uploader.upload(multipartFile, "images/origin");
         return "test";
     }
 
